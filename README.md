@@ -67,4 +67,20 @@
 |--------|-----------|-------------|
 | POST   | /user/join| 사용자 가입 |
 
- 
+
+🚀 개발 환경 
+- OS - Windows10
+- IDE - Intelli J
+- Framework - Spring boot 2.7.12
+- Database - MySQL
+- JDK - 17
+
+🚀 실행하기
+
+1. git clone 이후 build.gradle에서 필요한 dependency를 실행한다음, BookApplication을 실행한다.
+
+2. user/login을 통해 examples.txt 파일에 적힌대로 admin과 user1... 계정들을 생성한다.
+
+3. Swagger나 readme 혹은 exmaples.txt에 어떤 경로로 어떤 method로 값을 보내야 할지 적혀져있다.
+
+4. examples.txt에는 예시값들과 모든 url, 그리고 작동원리가 첨부되어있다. 
