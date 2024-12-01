@@ -1,0 +1,55 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '2.7.12' // Spring Boot 버전
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.book'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17) // Java 17 사용
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Spring Boot 기본 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA 사용
+	implementation 'org.springframework.boot:spring-boot-starter-web' // Spring MVC (REST API)
+
+	// Lombok (코드 간소화)
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// MySQL 드라이버
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Validation (엔티티 검증)
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// 테스트 의존성
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Springdoc OpenAPI/Swagger UI (API 문서화)
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+
+	// SLF4J (로그)
+	implementation 'org.slf4j:slf4j-api:1.7.36'
+
+	//JWT 구현 (회원가입) - 프런트에서 구현시 유저정보를 얻기 위함
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
