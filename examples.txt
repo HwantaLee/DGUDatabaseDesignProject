@@ -1,0 +1,251 @@
+user/join - 어드민
+
+{
+  "username": "admin@naver.com",
+  "password": "admin1234!",
+  "name": "admin1"
+}
+
+user/join - 일반유저
+
+{
+  "username": "2020112062@naver.com",
+  "password": "ly2020112062!",
+  "name": "taehwan"
+}
+
+{
+  "username": "user1@naver.com",
+  "password": "user11234!",
+  "name": "user1"
+}
+
+{
+  "username": "user2@naver.com",
+  "password": "user21234!",
+  "name": "user2"
+}
+.... (총6명의 유저 회원가입)
+
+
+
+/login
+
+{
+  "username": "admin@naver.com",
+  "password": "admin1234!"
+}
+
+
+{
+  "username": "2020112062@naver.com",
+  "password": "ly2020112062!"
+}
+
+Response header에 JWT TOKEN값나옴. 
+Bearer eyJhbGciOiJIUzUxMiJ9.eyJ1c2VybmFtZSI6IjIwMjAxMTIwNjJAbmF2ZXIuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3MzMwMjYzMzksImV4cCI6MTczMzg5MDMzOX0.bLKJ8khFKuWNXctbZNjn40LAtzpKmD3S5FrwRUHpuvwOnhg2hCgpjsfX8uUB8joZav1-cNqwJBDp0A9nYHSUNA
+
+{
+  "username": "user2@naver.com",
+  "password": "user21234!"
+}
+
+========================================================
+
+books/add 책추가 예시
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "releaseDate": "1925-04-10T00:00:00.000Z",
+  "page": 180
+}
+
+{
+  "title": "To Kill a Mockingbird",
+  "author": "Harper Lee",
+  "releaseDate": "1960-07-11T00:00:00.000Z",
+  "page": 281
+}
+
+{
+  "title": "1984",
+  "author": "George Orwell",
+  "releaseDate": "1949-06-08T00:00:00.000Z",
+  "page": 328
+}
+
+{
+  "title": "Pride and Prejudice",
+  "author": "Jane Austen",
+  "releaseDate": "1813-01-28T00:00:00.000Z",
+  "page": 279
+}
+
+{
+  "title": "Moby-Dick",
+  "author": "Herman Melville",
+  "releaseDate": "1851-10-18T00:00:00.000Z",
+  "page": 635
+}
+
+==========================================================
+
+books/update/{id} 
+
+ex) books/update/5 
+{
+  "title": "Moby-Dick",
+  "author": "Herman Melville",
+  "releaseDate": "1851-10-18T00:00:00.000Z",
+  "page": 630
+}
+-> 페이지수 변경 
+
+books/delete/5
+-> 데이터베이스에서 삭제는 안되고, isDeleted = true가 됨. 
+-> 실제 데이터삭제는 어드민이 직접 하는 식으로 일단 작성함. 
+
+==============================================================
+books/search (POST)
+
+{
+  "title": "string",
+  "author": "string",
+  "category": "string",
+  "tag": "string",
+  "status": "string"
+}
+-> 모든 조건 검색시 이렇게 사용 / 한개의 조건만 있어도 검색 가능 / AND문이지만 동적조건문으로 작성하여 검색
+
+{
+  "title": "Pride and Prejudice",
+  "author": "Jane Austen"
+}
+
+혹은
+
+{
+  "title": "1984"
+}
+
+이렇게 해도 검색이 가능하다. 
+
+
+==========================================================
+/books/bookinfo/1 (GET)
+-> 도서에 대한 상세한 정보를 볼 수 있다. 
+
+/books/list  (GET)
+-> isDeleted가 true가 아닌 모든 (삭제되지 않은 모든 책) 목록을 불러온다. 
+
+===========================================================
+대여와 반납
+
+/books/borrow (POST)
+{
+  "bookId": 1,
+  "userId": 2
+}
+
+/books/return (POST)
+{
+  "bookId": 1,
+  "userId": 2
+}
+
+-> 대출과 반납기록은 history에 남게 됨. 대출기한은 7일 
+
+==============================================================
+대여 기록 확인
+
+/history/all-rentals (GET)
+-> 모든 대여기록을 확인할 수 있음. 누가 어떤 책을 빌려갔는지.. 만료기한은 언제인지 
+
+/history/active-rentals (GET)
+-> 현재 기한이 지나지 않은 대여 목록 조회할때 사용 
+
+=============================================================
+카테고리 추가 
+
+/categories/add  (POST)
+
+Request body에 "History" 
+하나만 적으면 들어감. / 들어간 카테고리들은 순서에 따라 category_id가 매겨진다. 
+-> History, Fantasy, Poltics, Religion같은 책의 분류를 위해 사용 
+
+/categories/all (GET)
+-> 현재 어떤 카테고리가 있는지 조회 
+
+============================================================
+태그 추가 
+
+/tags/add/{bookid} (POST)
+-> 카테고리 추가 방식과 동일
+
+/tags/add/1 
+Request body에 "Moral Decay" 만 입력 
+
+-> 새로운 태그를 입력하면, 각각의 id로 매핑이 도니다. 
+-> 첫입력이 Moral Decay면
+-> 두번재 입력이 American Dream이면
+id가 1, Moral Decay
+id가 2, American Dream... 이런식으로 새로운 태그가 들어올때마다 이에 해당하는 id가 자동적으로 붙는다. 
+-> 여기서 사용되는 tag의 id는 {bookid}와 매핑되어 book의 tag 필드에 저장된다 
+-> 즉 bookid 3 / tag id 1 
+-> 이런식으로 저장된다. 
+
+/tags/serach?tagName= 
+
+-> tagName에 tags/add/{bookid}에 추가했던 값을 그대로 입력하면 
+-> 이 태그가 어디에 사용되었는지 알 수있다. 
+
+/tags/search?tagName="Moral Decay"
+로 사용 " " 를 붙여야하는건 tags/add/bookid에서 저렇게 입력해버려서.. 
+
+================================================================
+리뷰관리
+/reviews/add
+{
+  "bookId": 1,
+  "userId": 2,
+  "rating": 5,
+  "content": "Masterpiece of 1900s America"
+}
+-> 리뷰를 추가할 수 있음. 
+
+/reviews/book/{bookid}
+/reviews/book/1 
+
+-> 특정한 책에 대해 작성한 리뷰를 볼 수 있음. 
+
+/reviews/book/{bookid}/average-rating
+/reviews/book/1/average-rating
+
+-> 특정한 책에 대한 평점의 평균을 볼 수 있음. 
+
+
+/reviews/update/{id}
+-> 여기에 있는 id는 bookid가 아니라 review의 id임. review가 생성된 순서로 1, 2...를 부여됨
+-> 리뷰를 수정할 수 있음 
+{
+  "bookId": 1,
+  "userId": 2,
+  "rating": 4,
+  "content": "Not the best"
+}
+==============================================================
+대여 만기일 알림 
+
+/notifications/user/{userid}로 대여만기일이 되면 메세지가 간다. 
+-> 대여만기일인지 판단하는건 NotificationScheduler에서 진행
+-> NotificationScheuler는 History table에서 대여기록의 남은기한을 조회함. 
+-> 각 대여 기록에 대해 사용자에게 맞는 알림을 Notification 테이블에 생성
+-> 사용자는 클라이언트를 통해 알림을 조회할 수 있다.
+
+
+/notifications/read/{notificationId}
+-> 사용자가 알림을 읽었는지를 확인하기 위함. get으로 사용자가 받으면, notification id를 사용자가 읽으면 post하여 
+-> 사용자가 실제로 알림을 읽어 현재 나의 연체상황을 '인지'했다는것을 나타내기 위한 코드 
+-> post지만, get으로 받고, 어떤 버튼을 누르면 자동으로 그 값이 넘어오게함. 
+
+
